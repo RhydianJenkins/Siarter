@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"time"
 
@@ -38,5 +39,8 @@ func init() {
 }
 
 func main() {
-	cliApp.Run(os.Args)
+	err := cliApp.Run(os.Args)
+	if err != nil {
+		fmt.Println(err)
+	}
 }
