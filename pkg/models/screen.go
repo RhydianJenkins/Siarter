@@ -46,8 +46,6 @@ func (m *ScreenModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch msg.String() {
 		case "ctrl+c", "q", "esc":
 			return m, tea.Quit
-		default:
-			return m, nil
 		}
 	}
 
