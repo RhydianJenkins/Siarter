@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+	"log"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/rhydianjenkins/siarter/pkg/httpClient"
@@ -30,7 +31,10 @@ func CreateScreen(apiKey string, shipId string, mock bool) (*ScreenModel, error)
 }
 
 func (m *ScreenModel) Init() tea.Cmd {
-	m.fetchBoats()
+	err := m.fetchBoats()
+	if err != nil {
+		log.Fatal(err)
+	}
 	return nil
 }
 
