@@ -67,7 +67,7 @@ func init() {
 				Aliases: []string{"m"},
 				Usage:   "Show a basic map of the boat",
 				Action: func(c *cli.Context) error {
-					_, err := models.CreateScreen()
+					_, err := models.CreateScreen(apiKey, shipId, mock)
 					return err
 				},
 			},
