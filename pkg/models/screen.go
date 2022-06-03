@@ -10,7 +10,7 @@ import (
 type ScreenModel struct {
 	mapModel   *mapModel
 	httpClient *httpClient.Client
-	shipData   string
+	boats      []*httpClient.Boat
 }
 
 func CreateScreen(apiKey string, shipId string, mock bool) (*ScreenModel, error) {
@@ -18,7 +18,7 @@ func CreateScreen(apiKey string, shipId string, mock bool) (*ScreenModel, error)
 	screen := &ScreenModel{
 		createMap(),
 		httpClient.NewClient(url, mock),
-		"",
+		[]*httpClient.Boat{},
 	}
 
 	p := tea.NewProgram(screen, tea.WithAltScreen())
@@ -30,6 +30,7 @@ func CreateScreen(apiKey string, shipId string, mock bool) (*ScreenModel, error)
 }
 
 func (m *ScreenModel) Init() tea.Cmd {
+	m.fetchBoats()
 	return nil
 }
 
@@ -54,14 +55,14 @@ func (m *ScreenModel) View() string {
 	return s
 }
 
-func (m *ScreenModel) fetchData() error {
+func (m *ScreenModel) fetchBoats() error {
 	boats, err := m.httpClient.Get()
 
 	if err != nil {
 		return err
 	}
 
-	fmt.Println(boats)
+	m.boats = boats
 
 	return err
 }
