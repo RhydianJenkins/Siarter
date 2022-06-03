@@ -50,13 +50,13 @@ func init() {
 				Action: func(c *cli.Context) error {
 					url := fmt.Sprintf("https://services.marinetraffic.com/api/exportvessel/%s?v=1&protocol=jsono&shipId=%s", apiKey, shipId)
 					client := httpClient.NewClient(url, mock)
-					response, err := client.Get()
+					boats, err := client.Get()
 
 					if err != nil {
 						return err
 					}
 
-					fmt.Printf("%+v\n", response) // TODO somehow print this?
+					fmt.Printf("%+v\n", boats[0])
 
 					return nil
 				},

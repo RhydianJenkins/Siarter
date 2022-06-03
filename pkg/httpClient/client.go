@@ -23,27 +23,25 @@ type Boat struct {
 	MMSI      string
 }
 
-type ApiResponse []*Boat
-
 func NewClient(url string, mock bool) *Client {
 	return &Client{url, mock}
 }
 
-func getMockResponse() *ApiResponse {
-	return &ApiResponse{
-		&Boat{
-			"123",
-			"123",
-			"123",
-			"123",
-			"123",
-			"123",
-			"123",
+func getMockResponse() []*Boat {
+	return []*Boat{
+		{
+			"50.388360",
+			"-5.319272",
+			"226",
+			"68",
+			"99",
+			"2022-06-03T10:51:59",
+			"232007968",
 		},
 	}
 }
 
-func (c *Client) Get() (*ApiResponse, error) {
+func (c *Client) Get() ([]*Boat, error) {
 	if c.mock {
 		return getMockResponse(), nil
 	}
@@ -55,8 +53,8 @@ func (c *Client) Get() (*ApiResponse, error) {
 
 	defer r.Body.Close()
 
-	response := &ApiResponse{}
-	decodeError := json.NewDecoder(r.Body).Decode(response)
+	response := []*Boat{}
+	decodeError := json.NewDecoder(r.Body).Decode(&response)
 	if decodeError != nil {
 		return nil, decodeError
 	}
