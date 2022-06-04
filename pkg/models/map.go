@@ -2,25 +2,28 @@ package models
 
 import (
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/qeesung/image2ascii/convert"
 )
 
 type mapModel struct {
-	tiles [][]byte
+	tiles  [][]byte
+	mapStr string
 }
 
 func GenerateMap(width, height int) *mapModel {
-	tiles := make([][]byte, width)
-	for x := 0; x < width; x++ {
-		tiles[x] = make([]byte, height)
-		for y := 0; y < height; y++ {
-			tiles[x][y] = 'X'
-		}
+	return &mapModel{
+		mapStr: "",
 	}
-	m := &mapModel{tiles: tiles}
-	return m
 }
 
 func (m *mapModel) Init() tea.Cmd {
+	convertOptions := convert.DefaultOptions
+	convertOptions.FixedWidth = 100
+	convertOptions.FixedHeight = 40
+
+	converter := convert.NewImageConverter()
+	m.mapStr = converter.ImageFile2ASCIIString("res/img/worldMap.jpg", &convertOptions) // for some reason this is throwing an error?
+
 	return nil
 }
 
@@ -29,12 +32,5 @@ func (m *mapModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m *mapModel) View() string {
-	s := ""
-	for x := 0; x < len(m.tiles); x++ {
-		for y := 0; y < len(m.tiles[x]); y++ {
-			s += "X"
-		}
-		s += "\n"
-	}
-	return s
+	return m.mapStr
 }

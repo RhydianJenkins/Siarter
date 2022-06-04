@@ -55,6 +55,7 @@ func (m *ScreenModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.ready = false
 		m.mapModel = GenerateMap(msg.Width, msg.Height)
 		m.ready = true
+
 	}
 
 	return m, nil
