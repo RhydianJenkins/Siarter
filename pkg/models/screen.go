@@ -10,16 +10,20 @@ import (
 
 type ScreenModel struct {
 	mapModel   *mapModel
+	debugModel *debugModel
 	httpClient *httpClient.Client
 	boats      []*httpClient.Boat
+	ready      bool
 }
 
-func CreateScreen(apiKey string, shipId string, mock bool) (*ScreenModel, error) {
+func CreateScreen(apiKey, shipId string, mock bool) (*ScreenModel, error) {
 	url := fmt.Sprintf("https://services.marinetraffic.com/api/exportvessel/%s?v=1&protocol=jsono&shipId=%s", apiKey, shipId)
 	screen := &ScreenModel{
-		createMap(),
+		nil,
+		&debugModel{},
 		httpClient.NewClient(url, mock),
 		[]*httpClient.Boat{},
+		false,
 	}
 
 	p := tea.NewProgram(screen, tea.WithAltScreen())
@@ -47,24 +51,32 @@ func (m *ScreenModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "ctrl+c", "q", "esc":
 			return m, tea.Quit
 		}
+	case tea.WindowSizeMsg:
+		m.ready = false
+		m.mapModel = GenerateMap(msg.Width, msg.Height)
+		m.ready = true
 	}
 
 	return m, nil
 }
 
 func (m *ScreenModel) View() string {
+	if !m.ready {
+		return "Initialising..."
+	}
+
 	s := m.mapModel.View()
+	s += m.debugModel.View()
+
 	return s
 }
 
 func (m *ScreenModel) fetchBoats() error {
 	boats, err := m.httpClient.Get()
 
-	if err != nil {
-		return err
+	if err == nil {
+		m.boats = boats
 	}
-
-	m.boats = boats
 
 	return err
 }

@@ -1,22 +1,23 @@
 package models
 
 import (
-	"fmt"
-
 	tea "github.com/charmbracelet/bubbletea"
 )
 
 type mapModel struct {
-	choices  []string
-	cursor   int
-	selected map[int]struct{}
+	tiles [][]byte
 }
 
-func createMap() *mapModel {
-	return &mapModel{
-		choices:  []string{"Buy carrots", "Buy celery", "Buy kohlrabi"},
-		selected: make(map[int]struct{}),
+func GenerateMap(width, height int) *mapModel {
+	tiles := make([][]byte, width)
+	for x := 0; x < width; x++ {
+		tiles[x] = make([]byte, height)
+		for y := 0; y < height; y++ {
+			tiles[x][y] = 'X'
+		}
 	}
+	m := &mapModel{tiles: tiles}
+	return m
 }
 
 func (m *mapModel) Init() tea.Cmd {
@@ -24,53 +25,16 @@ func (m *mapModel) Init() tea.Cmd {
 }
 
 func (m *mapModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	switch msg := msg.(type) {
-
-	case tea.KeyMsg:
-		switch msg.String() {
-
-		case "up", "k":
-			if m.cursor > 0 {
-				m.cursor--
-			}
-
-		case "down", "j":
-			if m.cursor < len(m.choices)-1 {
-				m.cursor++
-			}
-
-		case "enter", " ":
-			_, ok := m.selected[m.cursor]
-			if ok {
-				delete(m.selected, m.cursor)
-			} else {
-				m.selected[m.cursor] = struct{}{}
-			}
-		}
-	}
-
 	return m, nil
 }
 
 func (m *mapModel) View() string {
-	s := "What should we buy at the market?\n\n"
-
-	for i, choice := range m.choices {
-
-		cursor := " "
-		if m.cursor == i {
-			cursor = ">"
+	s := ""
+	for x := 0; x < len(m.tiles); x++ {
+		for y := 0; y < len(m.tiles[x]); y++ {
+			s += "X"
 		}
-
-		checked := " "
-		if _, ok := m.selected[i]; ok {
-			checked = "x"
-		}
-
-		s += fmt.Sprintf("%s [%s] %s\n", cursor, checked, choice)
+		s += "\n"
 	}
-
-	s += "\nPress q to quit.\n"
-
 	return s
 }
