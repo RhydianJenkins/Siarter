@@ -17,3 +17,11 @@ go install # this will place a binary in your GOPATH
 # Usage
 
 ... TODO
+
+# TODO
+
+- Show some TUI friendly visualisation of a map and display a boat on it (basically a terminal version of the web app)
+    - Load world map image and convert to ASCII art
+    - Display world map image
+    - Zoom in centered around a LAT/LONG location
+    - Render boat in center

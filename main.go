@@ -8,6 +8,7 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/rhydianjenkins/siarter/pkg/httpClient"
+	"github.com/rhydianjenkins/siarter/pkg/models"
 	"github.com/urfave/cli/v2"
 )
 
@@ -59,6 +60,15 @@ func init() {
 					fmt.Printf("%+v\n", boats[0])
 
 					return nil
+				},
+			},
+			{
+				Name:    "map",
+				Aliases: []string{"m"},
+				Usage:   "Show a basic map of the boat",
+				Action: func(c *cli.Context) error {
+					_, err := models.CreateScreen(apiKey, shipId, mock)
+					return err
 				},
 			},
 		},
